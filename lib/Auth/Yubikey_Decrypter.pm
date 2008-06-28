@@ -2,7 +2,7 @@ package Auth::Yubikey_Decrypter;
 
 use warnings;
 use strict;
-use Crypt::Rijndael;
+require Crypt::Rijndael;
 
 =head1 NAME
 
@@ -10,11 +10,12 @@ Auth::Yubikey_Decrypter - The great new Auth::Yubikey_Decrypter!
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+use vars qw($VERSION)
+$VERSION = '0.02';
 
 =head1 SYNOPSIS
 
@@ -54,7 +55,7 @@ aeskey - either the modhex or hex AES key for your Yubikey (contact Yubico if yo
 
 =head1 REQUIRES
 
-Perl 5, Crypt::Rijndael
+Perl 5, L<Crypt::Rijndael>
 
 Order your Yubikey from L<http://www.yubico.com>
 
@@ -118,8 +119,9 @@ Please report any bugs or feature requests to C<bug-auth-yubikey_decrypter at rt
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Auth-Yubikey_Decrypter>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
+=head1 ACKNOWLEDGE
 
-
+Based a lot on PHP code by : PHP yubikey decryptor v0.1 by Alex Skov Jensen
 
 =head1 SUPPORT
 
