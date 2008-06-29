@@ -10,12 +10,12 @@ Auth::Yubikey_Decrypter - The great new Auth::Yubikey_Decrypter!
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
-use vars qw($VERSION)
-$VERSION = '0.02';
+use vars qw($VERSION);
+$VERSION = '0.03';
 
 =head1 SYNOPSIS
 
