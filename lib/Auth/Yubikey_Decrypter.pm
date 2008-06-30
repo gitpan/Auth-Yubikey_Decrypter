@@ -10,12 +10,12 @@ Auth::Yubikey_Decrypter - The great new Auth::Yubikey_Decrypter!
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 
 use vars qw($VERSION);
-$VERSION = '0.03';
+$VERSION = '0.04';
 
 =head1 SYNOPSIS
 
@@ -80,7 +80,7 @@ sub yubikey_decrypt
         }
 
         # Convert the AES key from it's hex value to binary
-        my $aeskey_bin  = &yubikey_hex2bin($aeskey_hex);
+        my $aeskey_bin  = pack "H*", $aeskey_hex;
 
         # strip out the actual token
         my $publicID = substr($fulltoken,0,length($fulltoken)-32);
@@ -93,9 +93,7 @@ sub yubikey_decrypt
         my $cipher = Crypt::Rijndael->new( $aeskey_bin );
         my $token_decoded_bin = $cipher->decrypt($token_bin);
 
-        # Convert the token to hex - ** This step could be skipped if we can strip out the values
-        #                               directly from the binary value **
-        my $token_decoded_hex = &yubikey_bin2hex($token_decoded_bin);
+        my $token_decoded_hex = unpack "H*", $token_decoded_bin;
 
         # get all the values from the decoded token
         my $secretid_hex        = substr($token_decoded_hex,0,12);
@@ -122,6 +120,7 @@ automatically be notified of progress on your bug as I make changes.
 =head1 ACKNOWLEDGE
 
 Based a lot on PHP code by : PHP yubikey decryptor v0.1 by Alex Skov Jensen
+Thanks to almut from L<http://perlmonks.org> for code guidance
 
 =head1 SUPPORT
 
@@ -187,29 +186,6 @@ sub yubikey_modhex_decode
                 }
         }
         return $decoded;
-}
-
-sub yubikey_hex2bin
-{
-        my $in = $_[0];
-        my $out = "";
-        for(my $k=0;$k<length($in);$k+=2)
-        {
-                $out .= chr(hex(substr($in,$k,2)));
-        }
-        return $out;
-}
-
-sub yubikey_bin2hex
-{
-        my $in = $_[0];
-        my $out = "";
-        for(my $k=0;$k<length($in);$k++)
-        {
-                $out .= sprintf("%2x",ord(substr($in,$k,1)));
-        }
-        $out =~ s/ /0/g;        # this is a hack.. not sure why it has to be like this...
-        return $out;
 }
 
 sub yubikey_crc_check
