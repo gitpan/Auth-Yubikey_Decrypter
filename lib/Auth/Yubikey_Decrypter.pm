@@ -6,16 +6,16 @@ require Crypt::Rijndael;
 
 =head1 NAME
 
-Auth::Yubikey_Decrypter - The great new Auth::Yubikey_Decrypter!
+Auth::Yubikey_Decrypter - Decrypting the output from the yubikey token
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =cut
 
 use vars qw($VERSION);
-$VERSION = '0.04';
+$VERSION = '0.05';
 
 =head1 SYNOPSIS
 
@@ -53,13 +53,18 @@ Input : token aeskey
 Token - received by the Yubikey
 aeskey - either the modhex or hex AES key for your Yubikey (contact Yubico if you don't have the AES key)
 
-=head1 REQUIRES
+Output :
 
-Perl 5, L<Crypt::Rijndael>
+$publicID
+$secretid_hex
+$counter_dec
+$timestamp_dec
+$session_use_dec
+$random_dec
+$crc_dec
+$crc_ok
 
-Order your Yubikey from L<http://www.yubico.com>
-
-=cut
+=cut 
 
 sub yubikey_decrypt
 {
@@ -107,61 +112,10 @@ sub yubikey_decrypt
         return ($publicID,$secretid_hex,$counter_dec,$timestamp_dec,$session_use_dec,$random_dec,$crc_dec,$crc_ok);
 }
 
-=head1 AUTHOR
+=head2 yubikey_modhex_decode
 
-Phil Massyn, C<< <massyn at gmail.com> >>
-
-=head1 BUGS
-
-Please report any bugs or feature requests to C<bug-auth-yubikey_decrypter at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Auth-Yubikey_Decrypter>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
-
-=head1 ACKNOWLEDGE
-
-Based a lot on PHP code by : PHP yubikey decryptor v0.1 by Alex Skov Jensen
-Thanks to almut from L<http://perlmonks.org> for code guidance
-
-=head1 SUPPORT
-
-You can find documentation for this module with the perldoc command.
-
-    perldoc Auth::Yubikey_Decrypter
-
-
-You can also look for information at:
-
-=over 4
-
-=item * RT: CPAN's request tracker
-
-L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Auth-Yubikey_Decrypter>
-
-=item * AnnoCPAN: Annotated CPAN documentation
-
-L<http://annocpan.org/dist/Auth-Yubikey_Decrypter>
-
-=item * CPAN Ratings
-
-L<http://cpanratings.perl.org/d/Auth-Yubikey_Decrypter>
-
-=item * Search CPAN
-
-L<http://search.cpan.org/dist/Auth-Yubikey_Decrypter>
-
-=back
-
-
-=head1 ACKNOWLEDGEMENTS
-
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008 Phil Massyn, all rights reserved.
-
-This program is free software; you can redistribute it and/or modify it
-under the same terms as Perl itself.
-
+Input : the modhex code
+Output : decoded modhex code in hex
 
 =cut
 
@@ -188,6 +142,12 @@ sub yubikey_modhex_decode
         return $decoded;
 }
 
+=head2 yubikey_crc_check
+
+Performs a crc check on the decoded data
+
+=cut
+
 sub yubikey_crc_check
 {
         my $buffer = $_[0];
@@ -210,5 +170,63 @@ sub yubikey_crc_check
 
         return 0;
 }
+
+=head1 REQUIRES
+
+Perl 5, L<Crypt::Rijndael>
+
+Order your Yubikey from L<http://www.yubico.com>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<bug-auth-yubikey_decrypter at rt.cpan.org>, or through
+the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Auth-Yubikey_Decrypter>.  I will be notified, and then you'll
+automatically be notified of progress on your bug as I make changes.
+
+=head1 SUPPORT
+
+You can find documentation for this module with the perldoc command.
+
+    perldoc Auth::Yubikey_Decrypter
+
+You can also look for information at:
+
+=over 4
+
+=item * RT: CPAN's request tracker
+
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Auth-Yubikey_Decrypter>
+
+=item * AnnoCPAN: Annotated CPAN documentation
+
+L<http://annocpan.org/dist/Auth-Yubikey_Decrypter>
+
+=item * CPAN Ratings
+
+L<http://cpanratings.perl.org/d/Auth-Yubikey_Decrypter>
+
+=item * Search CPAN
+
+L<http://search.cpan.org/dist/Auth-Yubikey_Decrypter>
+
+=back
+
+=head1 AUTHOR
+
+Phil Massyn, C<< <massyn at gmail.com> >>
+
+=head1 ACKNOWLEDGEMENTS
+
+Based a lot on PHP code by : PHP yubikey decryptor v0.1 by Alex Skov Jensen
+Thanks to almut from L<http://perlmonks.org> for code guidance
+
+=head1 COPYRIGHT & LICENSE
+
+Copyright 2008 Phil Massyn, all rights reserved.
+
+This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself.
+
+=cut
 
 1; # End of Auth::Yubikey_Decrypter
