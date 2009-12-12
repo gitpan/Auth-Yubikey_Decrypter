@@ -10,12 +10,12 @@ Auth::Yubikey_Decrypter - Decrypting the output from the yubikey token
 
 =head1 VERSION
 
-Version 0.05
+Version 0.06
 
 =cut
 
 use vars qw($VERSION);
-$VERSION = '0.05';
+$VERSION = '0.06';
 
 =head1 SYNOPSIS
 
@@ -70,22 +70,21 @@ sub yubikey_decrypt
 {
         my $fulltoken   = $_[0];
         my $aeskey      = $_[1];
-        my $aeskey_hex;
+	my $aeskey_bin;
+
+	print "DEBUG : go aeskey as $aeskey\n";
         if($aeskey =~ /^[a-f0-9]+$/i)
         {
-                $aeskey_hex     = $aeskey;
+		$aeskey_bin  = pack "H*", $aeskey;
         }
         elsif($aeskey =~ /^[cbdefghijklnrtuv]+$/i)
         {
-                $aeskey_hex     = &yubikey_modhex_decode($aeskey);
+		$aeskey_bin     = &yubikey_modhex_decode($aeskey);
         }
         else
         {
                 die "A weird AES key was supplied.  Please provide only hex or modhex.";
         }
-
-        # Convert the AES key from it's hex value to binary
-        my $aeskey_bin  = pack "H*", $aeskey_hex;
 
         # strip out the actual token
         my $publicID = substr($fulltoken,0,length($fulltoken)-32);
@@ -95,6 +94,7 @@ sub yubikey_decrypt
         my $token_bin = &yubikey_modhex_decode($token);
 
         # Decrypt the token using it's key
+
         my $cipher = Crypt::Rijndael->new( $aeskey_bin );
         my $token_decoded_bin = $cipher->decrypt($token_bin);
 
@@ -213,12 +213,13 @@ L<http://search.cpan.org/dist/Auth-Yubikey_Decrypter>
 
 =head1 AUTHOR
 
-Phil Massyn, C<< <massyn at gmail.com> >>
+Phil Massyn, C<< <phil at massyn.net> >>
 
 =head1 ACKNOWLEDGEMENTS
 
 Based a lot on PHP code by : PHP yubikey decryptor v0.1 by Alex Skov Jensen
 Thanks to almut from L<http://perlmonks.org> for code guidance
+Thanks to Mark Foobar L<http://blog.maniac.nl> for reporting the -32 bug on line 91 and 92.
 
 =head1 COPYRIGHT & LICENSE
 
