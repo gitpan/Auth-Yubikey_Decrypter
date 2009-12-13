@@ -10,12 +10,12 @@ Auth::Yubikey_Decrypter - Decrypting the output from the yubikey token
 
 =head1 VERSION
 
-Version 0.06
+Version 0.07
 
 =cut
 
 use vars qw($VERSION);
-$VERSION = '0.06';
+$VERSION = '0.07';
 
 =head1 SYNOPSIS
 
@@ -72,7 +72,11 @@ sub yubikey_decrypt
         my $aeskey      = $_[1];
 	my $aeskey_bin;
 
-	print "DEBUG : go aeskey as $aeskey\n";
+	# Let's sanitize the inut, just in case
+	$aeskey =~ s/[^A-Z0-9]//gi;
+	$fulltoken =~ s/[^A-Z0-9]//gi;
+
+	# Determine what mode the AES key is in
         if($aeskey =~ /^[a-f0-9]+$/i)
         {
 		$aeskey_bin  = pack "H*", $aeskey;

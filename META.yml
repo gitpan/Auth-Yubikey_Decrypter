@@ -1,6 +1,6 @@
 --- #YAML:1.0
 name:                Auth-Yubikey_Decrypter
-version:             0.06
+version:             0.07
 abstract:            Decrypting the output from the yubikey token
 license:             ~
 author:              
